@@ -905,9 +905,17 @@ Error detected → Exception object created → Exception thrown
  ```
 
   * What is the difference between error throwable and exception?
+  ```
+  throwable is a super class of error and exception 
+  error is  serious problem that cannout be handelled by jvm like over memeory stack overflow
+  exception is a block which is used to catch checked and uncheckd errors 
+  ```
   * examples of error and exception?
   ```
   error is bascially a bug/mistake/flaw in code and whenever it occurs during runtime the jvm will teminate program and throw the error where as a exception is a methond to catch the error can provide an alternative way if written catch code without intrutpitng the flow of code
+  ex
+  10/0 error 
+  catch(arthematic exception as e )
   ```
   * Why use try and catch ?
 
@@ -936,8 +944,16 @@ Error detected → Exception object created → Exception thrown
   ```
   * can i implement try and catch and still the program can stop due to exception 
   ```
-  
+  yes even we impletemt a try catch blocks then also the program can terminate wihout going to catch block 
+  ex 
+  try {
+    int x = 10 / 0;     // ArithmeticException
+} catch (NullPointerException e) { 
+    System.out.println("Null Pointer Exception caught");
+}
+System.out.println("End of program");
   ```
+  
   * what are the different type of exception?
   ```
   two types of exceptions compile time and run time 
@@ -963,6 +979,21 @@ Error detected → Exception object created → Exception thrown
 
   ```
   * what are the different types of exception?
+  ```
+  2 types of exceptions 
+  checked -they are checked by compiler and handelled by suitable catch or throw blocks if it failes then program fails to complie 
+  mainy occurs due to external reases
+  ex file no found sql io 
+  unchecked -they are not checked by complier and occur during runtime due to logical flaws
+  ```
   * major difference between checked and unchecked?Difference between syntax error and complie time and checked exception.
+  ```
+  Every checked exception is a compile-time error if not handled, but not every compile-time error is a checked exception
+  ```
 * why is checked exception even there? {catch(Exceptoin e)
 what is e ? who create it? where does it come from ?}
+```
+Checked exceptions force the programmer to handle extenal errors 
+* e is an object of the exception class (like Exception, IOException, etc.).
+automatically created by jvm 
+```
