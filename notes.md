@@ -54,7 +54,64 @@ public class BankAccount {
 
 Can Object have multiple states at the time of its creation? If yes, how is it achieved?
 
-> Yes, an object can have multiple states while creation. It can be created by _Default Constructor_ or _Parametric Constructor_. We can also have multiple constructors. See the example [here](./BankAccount.java)
+> Yes, an object can have multiple states while creation. It can be created by _Default Constructor_ or _Parametric Constructor_. We can also have multiple constructors. See the example 
+
+```java
+public class BankAccount {
+    String name;
+    int balance;
+    String bankName;
+    public class InnerBankAccount {
+        String innerName;
+        int innerBalance;
+
+        InnerBankAccount(String name, int balance) {
+            this.innerName = name;
+            this.innerBalance = balance;
+        }
+
+        void display() {
+            System.out.println("Inner Account Name: " + innerName);
+            System.out.println("Inner Account Balance: " + innerBalance);
+        }
+        protected void BankAccount1(String name) {
+            this.innerName = name;
+        }
+    }
+    
+    void setBalance(int balance) {
+        this.balance = balance;
+    }
+    BankAccount(String user,int bal,String bN){
+        name = user;
+        balance = bal;
+        bankName = bN;
+        System.out.println("User Created.");
+    }
+    BankAccount(int bal){
+        balance = bal;
+        System.out.println(balance);
+    }
+    BankAccount(String user){
+        name = user;
+        balance = 5000;
+        System.out.println(balance);
+    }
+    BankAccount(){
+        balance = 5000;
+        System.out.println(balance+" Default");
+    }
+    
+    public void deposit(int amount) {
+        balance += amount;
+        System.out.println("Deposited: " + amount);
+    }
+    public void deposit(int amount, String method) {
+        System.out.println(method);
+        deposit(amount);
+    }
+}
+```
 
 ## Constructor:
 
@@ -142,7 +199,40 @@ Whenever a method is declared as static, it can be directly invoked without crea
 
 > Read Initializers from the Internet.
 
-- Run [This](./Bank.java) to see more about initializers.
+- Run This to see more about initializers.
+```java 
+class Bank{
+    int balance;
+    static String BankName = "something 1st";
+    Bank(int b){
+        balance = b;
+    }
+    {
+        BankName = "1";
+        System.out.println("Initializer 1 Called "+BankName);
+    }
+    static {
+        BankName = "something";
+        System.out.println("Static Initializer Called "+BankName);
+    }
+    {
+        BankName = "2";
+        System.out.println("Initializer 2 Called "+BankName);
+    }
+    
+    public static void main(String[] args){
+        Bank b1 = new Bank(2);
+        System.out.println(b1.balance);
+    }
+}
+//Static Initializer Called something
+//Initializer 1 Called 1
+//Initializer 2 Called 2
+//2
+
+```
+
+
 
 `{ ... }` is called **Instance Initializer**, its called by JVM automatically before anything else, and if there are multiple then they are called in the order they are defined.
 
@@ -177,7 +267,18 @@ Depending on the data available, different constructors are invoked, resulting i
 
 ## Order of execution
 
-Lets see if [this](./Order.md) goes to 2 pages XD
+Lets see if this goes to 2 pages XD
+1. Class loaded
+2. Static Variables load
+3. Static Initializers load
+4. Static methods load
+5. `Bank SBI = ...` when this happens its called a instance being created.
+   - `... = new Bank(args)` is where object is constructed.
+6. Instance Variables load
+7. Instance Initializers load
+8. Constructors called
+9. methods load
+
 
 ## Inheritance
 
@@ -187,7 +288,110 @@ When one class (A) attains the state and behavior of another class (B), it is sa
 
 - Changes made in the base class is affecting all the child classes.
 
-### See Example [Here](./person.java)
+### See Example 
+
+```java
+public class person {
+    String name;
+    int age;
+    static int i = 10;
+    void eat(){
+        System.out.println(name+" is eating.");
+    }
+    public static void main(String[] args) {
+        Teacher deepa = new Teacher("Deepa",40);
+        deepa.eat();
+        deepa.work();
+        System.out.println(Teacher.i); // ! Static Variables are inherited.
+    }
+
+    {
+        System.out.println("Person Initializer called");
+    }
+    person(String name, int age){
+        this.name = name;
+        this.age = age;
+        System.out.println("Person Constructor called");
+    }
+}
+
+class Teacher extends person{
+    {
+        System.out.println("Teacher Initializer called");
+    }
+    Teacher(String name, int age){
+        // super(name, age); // * this is fine, but see below.
+        super("smthing",777);
+        this.name = name;
+        this.age = age; // ! This works too because "this" changes the name and age set by super because its called afterwards.
+        System.out.println("Teacher Constructor called");
+    }
+    void work(){
+        System.out.println(this.name+" is teaching.");
+    }
+}
+
+class Student extends person {
+    double GPA;
+    // * Required to have a constructor with super defined.
+    Student() {
+        super("someone", 18);
+    }
+}
+
+/*
+/*
+Pracice Program
+
+class Person {
+    String name;
+    int age;
+    String email;
+    void eat(){
+        System.out.println(this.name+" is eating.");
+    }
+    void Display(){
+        System.out.println("Name :"+name);
+        System.out.println("Age :"+age);
+    }
+    
+    Person(String name,int age){
+        this.name = name;
+        this.age = age;
+    }
+}
+
+class Teacher extends Person{
+    {
+        System.out.println("Teacher Initializer called");
+    }
+    float exp;
+    Teacher(String name,int age){
+        super(name,age);
+        // this.name = name;
+        // this.age = age;
+        System.out.println("Teacher Constructor called");
+    }
+    void work(){
+        System.out.println(this.name+" is teaching.");
+    }
+}
+
+class Student extends Person {
+    double GPA;
+    void study() {
+        System.out.println("Studying lessons");
+    }
+}
+
+class Staff extends Person {
+    double salary;
+    void maintain() {
+        System.out.println("Maintaining school facilities");
+    }
+}
+*/
+```
 
 - A parent class CAN'T access the state and behavior of child, but a Child CAN access all the state and behavior of the parent.
 
@@ -290,7 +494,7 @@ Overriding can not be done on methods that have been declared as final. We can n
 
 - Whenever the class is declared as final, we can not inherit the class anymore. Inheritance will get disabled.
 
-> ## Take a look at [these](./questions/10%20questions/) problems.
+
 
 ## Abstract
 
@@ -321,7 +525,76 @@ If we create a object from the class, if someone calls the abstract method, that
 
 Final stops inheritance, abstract demands inheritance.
 
-> ## Take a look at [this](./Cars.java) and also [this.](./car_plan.md)
+> ## Car Plan 
+# car has:
+
+- Accelerate
+- Brake
+- gears
+- engine
+- steering
+- speedometer
+
+## Automatic
+
+- all from car
+- Sports model
+-
+-
+
+## Manual
+
+- all from car
+- clutch
+- manual gears
+-
+
+```java 
+public class Cars {
+    
+}
+
+abstract class Car {
+    void accelerate(){
+
+    }
+    void brake(){
+
+    }
+    abstract void gears();
+    abstract void engine();
+    abstract void steering();
+}
+
+class Manual extends Car {
+    void clutch(){
+
+    }
+    void engine() {
+        
+    }
+    void gears() {
+        
+    }
+    void steering(){
+
+    }
+}
+
+class Auto extends Car {
+    void sportsModel(){
+
+    }
+    void engine() {
+        
+    }
+    void gears() {
+        
+    }
+    void steering(){
+
+    }
+}```
 
 and
 
@@ -486,3 +759,210 @@ See [this](./testFI.java) file.
 ## What do you mean by loose coupling of code?
 
 Whenever you create an application, you create 'N' no. of classes, these classes can can have "is-a" relationship or "has-a" relationship or relationship with interfaces. The code should be written in such a way that any addition/deletion in a problem statement should not affect the code. Nothing should be re-written.
+
+
+What is an Exception:
+An exception in Java is an object that represents an error or an unexpected event that occurs during program execution (runtime).
+
+When such an event happens, Java creates an object of a particular Exception class, and this object contains:
+
+i. The type of exception
+
+ii. The description (message) of the error
+
+iii. The stack trace (the list of methods that were running at the time)
+
+Then this object is “thrown” to the Java Runtime System.
+
+How Exceptions Happen:
+The Following steps, when an exception occurs:
+
+Step 1: Error Detected at Runtime
+When the JVM executes your program, it continuously monitors for abnormal conditions (errors).
+
+Example:
+int x = 10 / 0;
+
+When JVM tries to divide 10 by 0, it detects an illegal arithmetic operation.
+
+Step 2: JVM Creates an Exception Object
+
+At that moment, the JVM creates an object representing the error.
+This object belongs to a subclass of the Throwable class.
+
+For the above example:
+
+ArithmeticException ex = new ArithmeticException("/ by zero");	
+
+Step 3: The Exception is Thrown
+
+The exception object is thrown to the JVM using the throw mechanism — automatically by JVM or manually by programmer.
+
+a)If JVM throws it automatically then it is built-in exception.
+b)If programmer throws it manually then it is user-defined or manually thrown exception or custom exception.
+
+Step 4: JVM Looks for a Matching catch Block
+
+Now, the JVM starts searching for a matching catch block that can handle this exception.
+
+It looks in this order:
+The current method (try-catch inside method).
+If not found → the method that called this method
+Continues going up the call stack.
+
+If no method handles it → JVM terminates the program
+
+This process is called Exception Propagation.
+
+Step 5: Control Transfers to the Catch Block
+
+If a matching catch block is found, control is immediately transferred there, and the rest of the code in the try block is skipped.
+
+Example:
+
+try {
+    int x = 10 / 0;  // Exception occurs here
+    System.out.println("This will not execute");
+} catch (ArithmeticException e) {
+    System.out.println("Exception caught: " + e);
+}
+System.out.println("Program continues...");
+
+
+Output:
+
+Exception caught: java.lang.ArithmeticException: / by zero
+Program continues...
+
+Step 6: If No Catch Block Found
+
+If no matching catch block is found in the entire call chain:
+
+JVM prints the exception name, description, and stack trace.
+
+Program terminates abnormally.
+
+Example:
+
+int a = 10 / 0;
+System.out.println("Unreachable code");
+
+Output:
+
+Exception in thread "main" java.lang.ArithmeticException: / by zero
+	at MyProgram.main(MyProgram.java:3)
+
+Exception Propagation Example
+class Test {
+    static void divide() {
+        int x = 10 / 0;  // exception occurs
+    }
+
+    static void compute() {
+        divide(); // called by compute()
+    }
+
+    public static void main(String[] args) {
+        try {
+            compute(); // exception propagated here
+        } catch (ArithmeticException e) {
+            System.out.println("Handled in main(): " + e);
+        }
+    }
+}
+
+
+Explanation:
+
+Exception occurs in divide().
+
+No catch block → sent to compute().
+
+No catch block there → sent to main().
+
+main() has a catch block → handled.
+
+Output:
+
+Handled in main(): java.lang.ArithmeticException: / by zero
+
+Types of Exception Generation:
+i. Built-in: occurs when When Java code violates rules, Throws It by JVM, eg:Division by zero, invalid index
+ii.User-defined Exception:occurs when When programmer defines own error condition,Throws It by Programmer,eg:Age < 18, invalid marks, etc.
+
+Exception Lifecycle 
+Error detected → Exception object created → Exception thrown
+        ↓
+    JVM searches for handler
+        ↓
+  If found → catch block executes
+  If not found → program terminates
+
+
+
+ ```
+  1/Nov File Questions 
+ ```
+
+  * What is the difference between error throwable and exception?
+  * examples of error and exception?
+  ```
+  error is bascially a bug/mistake/flaw in code and whenever it occurs during runtime the jvm will teminate program and throw the error where as a exception is a methond to catch the error can provide an alternative way if written catch code without intrutpitng the flow of code
+  ```
+  * Why use try and catch ?
+
+     ``` 
+     it is in form try{}catch{} first the code in try block will run if any excepion/error occurs while executing that try block then it will look for specific catch block with the exception and if exists the block in catch will run or else the program will terminate without giving and error 
+     ```
+  * Why a programmer needs to iimplement try and catch?
+
+  ```
+  a programmer need to implement try and catch block when he dosent want the code to raise error while executing try catch blocks are used to catch errors without intrupting the flow of code 
+  ```
+  * what will happpen if he dosent do ?
+  ``` 
+  if a programmer doesnet implement ttry and catch blocks and then if any error occurs in flow of program then the program will terminate and raise an error if the implements then the block of code will execute in the exception is used to catch 
+  ```
+ *  What is a bug in a program
+ ```
+ bug is bascially a problem/error in a program 
+ ```
+
+  * can a try have multiple catch ? can a catch have multiple try?
+  ```
+  * yes we can hace multiple catch block liek catch (filenot found exception ) catch(file opening ) and so on based on the error raised in try block suitable catch will be executed 
+
+  * no a catch doesnt have multiple try methods
+  ```
+  * can i implement try and catch and still the program can stop due to exception 
+  ```
+  
+  ```
+  * what are the different type of exception?
+  ```
+  two types of exceptions compile time and run time 
+  ex
+ complie - it handles the extenal exceptions like file not found and database errors without these things the program couldnt complet
+
+ runtime - the errors like arthimatic exceptions
+  ```
+  * can a catch have try and catch? give example ?
+  ``` 
+  yes a catch can have a try and catch blocks inside it a program can raise issues/errors at any point of time and we can have it 
+  ex
+   try {
+    open file f
+  }except (file not found error)
+  {
+        try {
+            int j=10/0;
+        }except (arthematic exceotion){
+
+        }
+  }
+
+  ```
+  * what are the different types of exception?
+  * major difference between checked and unchecked?Difference between syntax error and complie time and checked exception.
+* why is checked exception even there? {catch(Exceptoin e)
+what is e ? who create it? where does it come from ?}
